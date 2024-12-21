@@ -1,16 +1,22 @@
-#include <iostream>
-#include <SDL3/SDL.h>
+#define SDL_MAIN_HANDLED
+
+#include <iostream> // Printing and debugging
+#include <SDL3/SDL.h> // For basic window rendering and event handling (obviously...)
+#include <defs.h> // All constants needed across files as well as structs
+#include <collision.h> // Collision objects
 
 int main() {
-    std::cout << "Runs at all?\n";
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) == false) {
         std::cout << "SDL_Video failed to init: " << SDL_GetError() << '\n';
         return 1;
     }
 
-    SDL_Window *window = SDL_CreateWindow("Blython", 500, 500, SDL_WINDOW_FULLSCREEN);
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, "renderer");
+    SDL_Window *window = SDL_CreateWindow("Blython", DEFS::WINDOW_WIDTH, DEFS::WINDOW_HEIGHT, 0);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
     SDL_Event event;
+
+    SDL_FRect testRect{0, 0, 50, 50};
+    CollisionObject Test(&testRect);
 
     bool running = true;
 
@@ -23,8 +29,15 @@ int main() {
             }
         }
 
+              
+
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_RenderFillRect(renderer, &testRect);
+
+        SDL_RenderPresent(renderer);
     }
 
     SDL_DestroyRenderer(renderer);
